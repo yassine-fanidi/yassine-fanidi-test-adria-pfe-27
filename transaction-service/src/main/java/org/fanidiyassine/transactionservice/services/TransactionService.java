@@ -31,6 +31,7 @@ public class TransactionService {
     public Transaction saveTransaction(Transaction transaction) {
         try {
             BankAccountModel bankAccount = accountRestClient.getBankAccountById(transaction.getAccountId());
+            System.out.println("Hello from here");
             transaction.setId(UUID.randomUUID().toString());
             transaction.setAccountId(bankAccount.getId());
             transaction.setCreatedAt(new Date());
