@@ -1,6 +1,8 @@
 package org.fanidiyassine.transactionservice.services;
 
 import org.fanidiyassine.transactionservice.entities.Transaction;
+import org.fanidiyassine.transactionservice.feign.AccountRestClient;
+import org.fanidiyassine.transactionservice.models.BankAccountModel;
 import org.fanidiyassine.transactionservice.repositories.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,21 +17,27 @@ import java.util.UUID;
 @Service
 public class TransactionService {
     private TransactionRepository transactionRepository;
-    public TransactionService(TransactionRepository transactionRepository) {
+    private AccountRestClient accountRestClient;
+    public TransactionService(TransactionRepository transactionRepository, AccountRestClient accountRestClient) {
         this.transactionRepository = transactionRepository;
+        this.accountRestClient = accountRestClient;
     }
-    @GetMapping("/transactions")
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
-    @GetMapping("/transactions/{id}")
-    public Transaction getTransactionById(@PathVariable String id) {
+    public Transaction getTransactionById(String id) {
         return transactionRepository.findById(id).orElseThrow(()->new RuntimeException("Transaction with id "+id+" not found"));
     }
-    @PostMapping("/transactions")
-    public Transaction saveTransaction(@RequestBody Transaction transaction) {
-        transaction.setId(UUID.randomUUID().toString());
-        transaction.setCreatedAt(new Date());
-        return transactionRepository.save(transaction);
+    public Transaction saveTransaction(Transaction transaction) {
+        try {
+            BankAccountModel bankAccount = accountRestClient.getBankAccountById(transaction.getAccountId());
+            transaction.setId(UUID.randomUUID().toString());
+            transaction.setAccountId(bankAccount.getId());
+            transaction.setCreatedAt(new Date());
+            return transactionRepository.save(transaction);
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Save transaction failed");
+        }
     }
 }
