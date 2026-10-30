@@ -1,5 +1,6 @@
 package org.fanidiyassine.accountservice;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,5 +10,11 @@ public class AccountServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AccountServiceApplication.class, args);
 	}
+
+//	CommandLineRunner commandLineRunner(){
+//		return args -> {
+//
+//		}
+//	}
 
 }
