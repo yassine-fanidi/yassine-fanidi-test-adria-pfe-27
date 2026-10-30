@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CustomerRestClient {
     @GetMapping("/customers/{id}")
     @CircuitBreaker(name = "customer-service", fallbackMethod = "getDefaultCustomer")
-    @Bean
     CustomerModel getCustomerById(@PathVariable Long id);
 
     default CustomerModel getDefaultCustomer(Long id, Exception e) {
