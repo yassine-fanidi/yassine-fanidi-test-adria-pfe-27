@@ -11,7 +11,7 @@ import org.fanidiyassine.accountservice.emuns.AccountStatus;
 public class BankAccount {
     @Id
     private String id;
-    private String customerRef;
+    private Long customerRef;
     private AccountStatus status;
     private String currency;
     private double balance;
